@@ -8,11 +8,11 @@ const models = require("../models");
 /**
  * Returns artist that match a given string
  **/
-function searchArtist(searchBy, res) {
-
-  let path =  '/v1/artists?q=' + searchBy.artist + '&appkey=123456789&appid=123456789';
+const searchArtist = (searchBy, reply) => {
+  console.log("ola")
+  let path =  '/v1/artists?q=' + searchBy.artist + '&appkey=8954824&appid=8954824';
   path = path.replace(/\s/g, "+")
-
+  console.log(path)
   https.get({
     host: 'music-api.musikki.com',
     path : path,
@@ -20,26 +20,28 @@ function searchArtist(searchBy, res) {
         // Continuously update stream with data
         let body = '';
         let artists = [];
+
         response.on('data', (d) => {
             body += d;
         });
+
         response.on('end', () => {
-
-            let results = JSON.parse(body).results
-
+            let results = JSON.parse(body).results;
             for(let i = 0; i < results.length; i++) {
-              artists.push({'id' : results[i].mkid, 'name' : results[i].name})
+              artists.push({'id' : results[i].mkid, 'name' : results[i].name});
 
             }
 
-            let final_results = users.getFavoriteArtists(artists, 4, res)
+            let final_results = users.getFavoriteArtists(artists, 4, reply)
         });
+    }).on('error', (e) => {
+      reply(new Error(e));
     });
 };
 
 
-module.exports.search = (request, response) => {
-  searchArtist(request.payload, response)
+module.exports.search = (request, reply) => {
+  searchArtist(request.payload, reply)
 
 
 

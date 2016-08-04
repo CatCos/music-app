@@ -8,15 +8,15 @@
     "seederStorage": "sequelize"
   },
   "test": {
-    "username": "accosta",
+    "username": "musikki",
     "password": "password",
     "database": "musikki",
     "host": "127.0.0.1",
     "dialect": "postgres"
   },
   "production": {
-    "username": "accosta",
-    "password": "postgres",
+    "username": "musikki",
+    "password": "password",
     "database": "musikki",
     "host": "127.0.0.1",
     "dialect": "postgres"

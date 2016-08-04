@@ -1,4 +1,4 @@
-const auth = require("../handlers/auth.js");
+const auth = require("../controllers/auth.js");
 
 module.exports = [
     {

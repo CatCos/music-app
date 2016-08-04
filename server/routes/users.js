@@ -1,4 +1,4 @@
-const user = require("../handlers/users.js");
+const user = require("../controllers/users.js");
 
 module.exports = [
     {

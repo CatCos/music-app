@@ -6,6 +6,7 @@ const Sequelize = require('sequelize')
 // Create a server with a host and port
 const server = new Hapi.Server();
 
+require('dotenv').config();
 
 server.connection({
     host: 'localhost',

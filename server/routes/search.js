@@ -1,9 +1,8 @@
-const search = require("../handlers/search.js");
+const search = require("../controllers/search.js");
 
-module.exports = [
-    {
+module.exports = [{
       method: 'POST',
       path: '/search/',
-        handler: search.search
+      handler: search.searchByArtist
     }
 ];
