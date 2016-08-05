@@ -105,3 +105,42 @@ module.exports.findFavorites = (request, reply) => {
   });
 
 }
+
+module.exports.addFavorite = (request, reply) => {
+
+  const data = request.payload
+  const user_id = 2;
+
+  models.user.findOne({
+    attributes: ['favorites'],
+    where: {
+      id: user_id
+    }
+  }).then((result) => {
+      let favorites = JSON.parse(result.favorites);
+      const isFavorite = isUserFavorite(data, favorites)
+
+      if(!isFavorite) {
+
+        favorites.push({'id' : data.mkid, 'name': data.name})
+
+        models.user.update(
+        {
+          favorites : favorites
+        }, {
+        where: {
+          id: user_id
+        }
+        }).then((result) => {
+
+          reply({
+            "error" : false,
+            "message" : "success",
+            "data" : favorites
+          });
+        })
+      }
+
+    });
+};
+
