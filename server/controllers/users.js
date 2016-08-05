@@ -4,6 +4,45 @@ const Hapi = require('hapi');
 const Promise = require('promise');
 const models = require("../models");
 
+const bcrypt = require('bcrypt');
+
+
+module.exports.create = (request, reply) => {
+
+  const salt = bcrypt.genSaltSync();
+  const hash = bcrypt.hashSync(request.payload.password, salt);
+
+  models.user.findOne({
+    atributes : ['id', 'username'],
+    where : {
+      username : request.payload.username
+    }
+  }).then((result) => {
+
+    if(result == null) {
+      models.user.create(
+      {
+        username: request.payload.username,
+        password : hash
+
+      }).then(function(user)
+      {
+        reply({
+          "error" : false,
+          "message" : "success",
+          "data" : "USER INSERTED"});
+      });
+    }
+    else {
+      reply({
+        "error" : true,
+        "message" : "failed",
+        "data" : "USER ALREADY EXISTS"});
+    }
+  });
+};
+
+
 /**
  * Returns a list of artists, with indication if they are a favorite of the user
  * or not
