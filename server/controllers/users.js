@@ -4,6 +4,10 @@ const Hapi = require('hapi');
 const Promise = require('promise');
 const models = require("../models");
 
+/**
+ * Returns a list of artists, with indication if they are a favorite of the user
+ * or not
+ */
 module.exports.getFavoriteArtists = (results, user_id, reply) => {
 
   models.user.findOne({
@@ -25,12 +29,13 @@ module.exports.getFavoriteArtists = (results, user_id, reply) => {
           });
         }
 
-        //res((artists))
-
         reply(artists);
     });
 };
 
+/**
+ * Verifies if artist is a favorite artist of the user
+ */
 const isUserFavorite = (artist, favorites) => {
 
   for(let i = 0; i < favorites.length; i++) {
@@ -41,6 +46,7 @@ const isUserFavorite = (artist, favorites) => {
 
   return false
 }
+
 /**
   * Returns the favorites artists of the user
   */
