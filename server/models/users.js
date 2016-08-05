@@ -12,7 +12,7 @@ module.exports = function(sequelize, DataTypes) {
     },
 
     favorites : {
-      type : DataTypes.JSONB,
+      type : DataTypes.JSON,
       allowNull : true
     }
 
