@@ -41,3 +41,22 @@ const isUserFavorite = (artist, favorites) => {
 
   return false
 }
+/**
+  * Returns the favorites artists of the user
+  */
+module.exports.findFavorites = (request, reply) => {
+
+  const user_id = 1
+
+  models.user.findOne({
+    attributes: ['favorites'],
+    where: {
+      id: user_id
+    }
+  }).then((result) => {
+      let favorites = JSON.parse(JSON.stringify(result.favorites));
+
+      reply(favorites)
+  });
+
+}
