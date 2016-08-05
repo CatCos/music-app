@@ -144,3 +144,45 @@ module.exports.addFavorite = (request, reply) => {
     });
 };
 
+module.exports.deleteFavorite = (request, reply) => {
+
+  const data = request.payload
+  const user_id = 2;
+
+  models.user.findOne({
+    attributes: ['favorites'],
+    where: {
+      id: user_id
+    }
+  }).then((result) => {
+
+      let favorites = JSON.parse(JSON.stringify(result.favorites));
+      const isFavorite = isUserFavorite(data, favorites)
+
+      if(isFavorite) {
+
+        for(let i = favorites.length-1; i >= 0; i--) {
+          if(favorites[i].id == data.mkid) {
+            favorites.splice(i, 1);
+          }
+        }
+
+        models.user.update(
+        {
+          favorites : favorites
+        }, {
+        where: {
+          id: user_id
+        }
+        }).then((result) => {
+          reply({
+            "error" : false,
+            "message" : "success",
+            "data" : favorites
+          });
+
+        });
+      }
+
+    });
+};

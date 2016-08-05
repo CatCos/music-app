@@ -12,6 +12,11 @@ module.exports = [
       handler : user.addFavorite
     },
     {
+      method : 'DELETE',
+      path : '/favorites/delete',
+      handler : user.deleteFavorite
+    },
+    {
       method : 'POST',
       path : '/users/new',
       handler : user.create
