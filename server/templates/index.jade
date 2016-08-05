@@ -1,0 +1,25 @@
+include layout
+
+block content
+  include navbar
+  div(class="container-fluid")
+    div(style="height:100px;")
+    div(class="row")
+      div(class="col-lg-3 col-sm-5")
+      div(class="col-lg-5 col-sm-5")
+        form(class="form-signin", role="form", id="myForm", method="post", action="/login", style="border: 1px solid #f1f1f1;")
+          h2 Sign in
+          input(type="text", class="form-control", placeholder="Username", required="", autofocus="",name="username")
+          br
+          input(type="password", class="form-control", placeholder="Password", required="", name="password")
+          if locals.wrong == 1
+            p(style="color:red;") Wrong username or password!
+          button(class="btn btn-lg btn-primary btn-block",type="submit", value="Entrar") Login
+          br
+          a(href="/password/forgot") Forgot your password?
+          br
+          p  Don't have a ScienceMemo account&#63
+            a(href="/account")   Sign up now
+
+
+  script(src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js")

@@ -3,6 +3,7 @@ const Joi = require('joi');
 const routes = require('./routes');
 const models = require('./models');
 const Sequelize = require('sequelize')
+const Jade = require('jade');
 // Create a server with a host and port
 const server = new Hapi.Server();
 
@@ -15,6 +16,12 @@ server.connection({
 
 server.route(routes);
 
+  server.views({
+    engines: {
+        jade: Jade
+    },
+    path: Path.join(__dirname, 'templates')
+  });
 
 
 // Start the server
