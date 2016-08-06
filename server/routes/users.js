@@ -4,21 +4,33 @@ module.exports = [
     {
       method: 'GET',
       path: '/users/favorites',
-      handler: user.findFavorites
+      config : {
+        auth: 'session',
+        handler: user.findFavorites
+      }
     },
     {
       method : 'PUT',
       path : '/favorites/add',
-      handler : user.addFavorite
+      config : {
+        auth: 'session',
+        handler : user.addFavorite
+      }
     },
     {
       method : 'DELETE',
       path : '/favorites/delete',
-      handler : user.deleteFavorite
+      config : {
+        auth: 'session',
+        handler : user.deleteFavorite
+      }
     },
     {
       method : 'POST',
       path : '/users/new',
-      handler : user.create
+      config : {
+        auth: 'session',
+        handler : user.create
+      }
     }
 ];
