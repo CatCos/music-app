@@ -3,7 +3,7 @@ module.exports = {
     "username": process.env.DB_USER,
     "password": process.env.DB_PASS,
     "database": "musikki",
-    "host": process.env.DATABASE_URL,
+    "host": process.env.DB_HOST,
     "dialect": "postgres",
     "seederStorage": "sequelize"
   },
@@ -11,14 +11,14 @@ module.exports = {
     "username": process.env.DB_USER,
     "password": process.env.DB_PASS,
     "database": "musikki",
-    "host": process.env.DATABASE_URL,
+    "host": process.env.DB_HOST,
     "dialect": "postgres"
   },
   "production": {
     "username": process.env.DB_USER,
     "password": process.env.DB_PASS,
     "database": "musikki",
-    "host": process.env.DATABASE_URL,
+    "host": process.env.DB_HOST,
     "dialect": "postgres"
   }
 };
