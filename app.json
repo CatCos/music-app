@@ -1,0 +1,6 @@
+{
+  "name": "Musikki",
+  "description": "Musikki app",
+  "repository": "https://github.com/catcos/music-app",
+  "image": "heroku/nodejs"
+}
