@@ -15,11 +15,11 @@
   "dependencies": {
     "bcrypt": "^0.8.7",
     "dotenv": "^2.0.0",
-    "hapi": "^8.1.0",
+    "hapi": "^14.1.0",
     "hapi-auth-cookie": "^6.1.1",
     "inert": "^4.0.1",
     "jade": "^1.11.0",
-    "joi": "^5.1.0",
+    "joi": "^9.0.4",
     "pg": "^6.0.3",
     "pg-hstore": "^2.3.2",
     "promise": "^7.1.1",
