@@ -9,7 +9,7 @@ const Path = require('path')
 const server = new Hapi.Server();
 
 server.connection({
-    host: '0.0.0.0',
+    host: process.env.HOST,
     port: process.env.PORT
 });
 
