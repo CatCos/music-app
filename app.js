@@ -6,12 +6,12 @@ const Sequelize = require('sequelize')
 const Jade = require('jade');
 const Path = require('path')
 // Create a server with a host and port
-const server = new Hapi.Server();
+const server = new Hapi.Server(+process.env.PORT, '0.0.0.0');
 
-server.connection({
-    host: process.env.HOST,
-    port: 8000
-});
+//server.connection({
+//    host: process.env.HOST,
+//    port: 8000
+//});
 
 server.register([require('hapi-auth-cookie'),
                 require('inert'),
