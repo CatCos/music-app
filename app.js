@@ -8,8 +8,6 @@ const Path = require('path')
 // Create a server with a host and port
 const server = new Hapi.Server();
 
-require('dotenv').config();
-
 server.connection({
     host: 'localhost',
     port: 8000
