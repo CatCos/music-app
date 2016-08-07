@@ -6,7 +6,7 @@ const Sequelize = require('sequelize')
 const Jade = require('jade');
 const Path = require('path')
 // Create a server with a host and port
-const server = new Hapi.Server(+process.env.PORT, '0.0.0.0');
+const server = new Hapi.Server({port: process.env.PORT, host: '0.0.0.0'});
 
 //server.connection({
 //    host: process.env.HOST,
