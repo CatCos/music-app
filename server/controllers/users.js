@@ -27,17 +27,20 @@ module.exports.create = (request, reply) => {
 
       }).then(function(user)
       {
-        reply({
-          "error" : false,
-          "message" : "success",
-          "data" : "USER INSERTED"});
+
+        return reply.view('index', {
+          'invalid_user' : 1,
+          'wrong' : 0,
+          'user_created' : 1
+          });
       });
     }
     else {
-      reply({
-        "error" : true,
-        "message" : "failed",
-        "data" : "USER ALREADY EXISTS"});
+      return reply.view('index', {
+        'invalid_user' : 1,
+        'wrong' : 0,
+        'user_created' : 0
+      });
     }
   });
 };
@@ -101,7 +104,11 @@ module.exports.findFavorites = (request, reply) => {
   }).then((result) => {
       let favorites = JSON.parse(JSON.stringify(result.favorites));
 
-      reply(favorites)
+      return reply.view('user_favorites', {
+        'favorites' : favorites,
+        'user' : {username: request.auth.credentials.username}
+      });
+
   });
 
 }

@@ -11,7 +11,11 @@ module.exports.login = (request, reply) => {
 
       return reply.redirect('/users/favorites');
     } else {
-      return reply({'error' :'Bad email or password'});
+      return reply.view('index', {
+        'invalid_user' : 0,
+        'wrong' : 1,
+        'user_created' : 0
+      });
     }
   })
   .catch(function(err){

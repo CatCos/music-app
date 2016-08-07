@@ -7,7 +7,10 @@ const index = [
     method : 'GET',
     path: '/',
     handler: function (request, reply) {
-              return reply.view('index');
+              return reply.view('index', {
+                'invalid_user' : 0,
+                'wrong' : 0
+              });
           }
   },
   {
