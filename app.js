@@ -10,7 +10,7 @@ const server = new Hapi.Server();
 
 server.connection({
     host: process.env.HOST,
-    port: process.env.PORT
+    port: 8000
 });
 
 server.register([require('hapi-auth-cookie'),
