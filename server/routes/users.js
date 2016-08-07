@@ -5,8 +5,9 @@ module.exports = [
       method: 'GET',
       path: '/users/favorites',
       config : {
-        auth: 'session',
-        handler: user.findFavorites
+        auth:  {strategy : 'session'},
+        handler: user.findFavorites,
+        plugins: { 'hapi-auth-cookie': { redirectTo: '/' } }
       }
     },
     {
@@ -28,9 +29,6 @@ module.exports = [
     {
       method : 'POST',
       path : '/users/new',
-      config : {
-        auth: 'session',
-        handler : user.create
-      }
+      handler : user.create
     }
 ];

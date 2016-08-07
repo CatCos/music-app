@@ -6,11 +6,10 @@ module.exports.login = (request, reply) => {
   getValidatedUser(request.payload.username, request.payload.password)
   .then(function(user){
 
-    if (user) {
+    if (user != null) {
       request.cookieAuth.set(user);
 
-      return reply({'error' :'Login Successfuly'});
-
+      return reply.redirect('/users/favorites');
     } else {
       return reply({'error' :'Bad email or password'});
     }
@@ -38,7 +37,7 @@ function getValidatedUser(username, password){
                   'username' : result.username});
               }
               else {
-                  return reject(null);
+                  return fulfill(null);
               }
             });
           }
@@ -55,6 +54,6 @@ function getValidatedUser(username, password){
 module.exports.logout = (request, reply) => {
   request.cookieAuth.clear();
   //return reply.redirect('/');
-  return reply('logout done')
+  return reply.redirect('/')
 
 };

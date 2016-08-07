@@ -91,7 +91,7 @@ const isUserFavorite = (artist, favorites) => {
   */
 module.exports.findFavorites = (request, reply) => {
 
-  const user_id = 1
+  const user_id = request.auth.credentials.id;
 
   models.user.findOne({
     attributes: ['favorites'],

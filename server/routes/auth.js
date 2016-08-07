@@ -14,15 +14,13 @@ module.exports = [
           password: Joi.string().min(2).max(200).required()
         }
       },
-      handler: auth.login,
-      plugins: { 'hapi-auth-cookie': { redirectTo: false } }
+      handler: auth.login
     }
   },
   {
-    method: 'POST',
+    method: 'GET',
     path: '/logout',
     config : {
-      auth: 'session',
       handler: auth.logout
     }
   }
