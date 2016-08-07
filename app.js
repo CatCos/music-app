@@ -9,8 +9,8 @@ const Path = require('path')
 const server = new Hapi.Server();
 
 server.connection({
-    host: 'localhost',
-    port: 8000
+    host: process.env.HOST,
+    port: process.env.PORT
 });
 
 server.register([require('hapi-auth-cookie'),
