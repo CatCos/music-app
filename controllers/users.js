@@ -5,7 +5,8 @@ const Promise = require('promise');
 const models = require("../models");
 
 const bcrypt = require('bcrypt');
-
+const https = require('https')
+const sequelize = require('sequelize')
 
 module.exports.create = (request, reply) => {
 
@@ -51,6 +52,7 @@ module.exports.create = (request, reply) => {
  * or not
  */
 module.exports.getFavoriteArtists = (results, user, reply) => {
+
   models.user.findOne({
       attributes: ['favorites'],
       where: {
@@ -67,11 +69,13 @@ module.exports.getFavoriteArtists = (results, user, reply) => {
 
         for(let i = 0; i < results.length; i++) {
           isFavorite = isUserFavorite(results[i], favorites);
+
           artists.push({
-            'id' : results[i].mkid,
+            'mkid' : results[i].mkid,
             'name' : results[i].name,
             'photo' : results[i].image,
-            'is_favorite' : isFavorite
+            'is_favorite' : isFavorite,
+            'genres' : results[i].genres
           });
         }
 
@@ -89,7 +93,7 @@ const isUserFavorite = (artist, favorites) => {
     return false
   }
   for(let i = 0; i < favorites.length; i++) {
-    if(favorites[i].id == artist.mkid) {
+    if(favorites[i].mkid == artist.mkid) {
       return true
     }
   }
