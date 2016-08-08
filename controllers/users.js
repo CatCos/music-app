@@ -85,6 +85,9 @@ module.exports.getFavoriteArtists = (results, user, reply) => {
  */
 const isUserFavorite = (artist, favorites) => {
 
+  if(favorites.length == 0) {
+    return false
+  }
   for(let i = 0; i < favorites.length; i++) {
     if(favorites[i].id == artist.mkid) {
       return true
@@ -129,7 +132,11 @@ module.exports.addFavorite = (request, reply) => {
       id: user_id
     }
   }).then((result) => {
-      let favorites = JSON.parse(result.favorites);
+    let favorites = []
+      if(result.favorites.length > 0) {
+        favorites = JSON.parse(result.favorites);
+      }
+
       const isFavorite = isUserFavorite(data, favorites)
 
       if(!isFavorite) {
@@ -159,8 +166,9 @@ module.exports.addFavorite = (request, reply) => {
 module.exports.deleteFavorite = (request, reply) => {
 
   const data = request.payload
-  const user_id = 2;
+  const user_id = request.auth.credentials.id;
 
+  console.log(data)
   models.user.findOne({
     attributes: ['favorites'],
     where: {
@@ -174,7 +182,7 @@ module.exports.deleteFavorite = (request, reply) => {
       if(isFavorite) {
 
         for(let i = favorites.length-1; i >= 0; i--) {
-          if(favorites[i].id == data.mkid) {
+            if(favorites[i].id == data.mkid) {
             favorites.splice(i, 1);
           }
         }
@@ -187,11 +195,7 @@ module.exports.deleteFavorite = (request, reply) => {
           id: user_id
         }
         }).then((result) => {
-          reply({
-            "error" : false,
-            "message" : "success",
-            "data" : favorites
-          });
+          return  reply({data:'success'})
 
         });
       }
