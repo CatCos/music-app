@@ -111,7 +111,7 @@ module.exports.findFavorites = (request, reply) => {
     }
   }).then((result) => {
       let favorites = JSON.parse(JSON.stringify(result.favorites));
-
+      favorites = sortByKey(favorites, 'name');
       return reply.view('user_favorites', {
         'favorites' : favorites,
         'user' : {username: request.auth.credentials.username}
@@ -121,6 +121,12 @@ module.exports.findFavorites = (request, reply) => {
 
 }
 
+function sortByKey(array, key) {
+    return array.sort(function(a, b) {
+        var x = a[key]; var y = b[key];
+        return ((x < y) ? -1 : ((x > y) ? 1 : 0));
+    });
+}
 
 module.exports.addFavorite = (request, reply) => {
 
