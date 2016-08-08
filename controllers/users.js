@@ -62,8 +62,10 @@ module.exports.getFavoriteArtists = (results, user, reply) => {
       }
     }).then((result) => {
         let favorites = [];
-        if(result.favorites.length > 0){
-          favorites = JSON.parse(JSON.stringify(result.favorites));
+        if(result.favorites != null) {
+          if(result.favorites.length > 0){
+            favorites = JSON.parse(JSON.stringify(result.favorites));
+          }
         }
 
         let artists = [];
@@ -117,7 +119,7 @@ module.exports.findFavorites = (request, reply) => {
     }
   }).then((result) => {
       let favorites = []
-      if(result.favorites.length > 0) {
+      if(result.favorites != null) {
         favorites= JSON.parse(JSON.stringify(result.favorites));
         favorites = sortByKey(favorites, 'name');
       }
@@ -186,8 +188,10 @@ module.exports.addFavorite = (request, reply) => {
                   'name' : artist_information.name,
                   'photo' : artist_information.image}
 
-                if(result.favorites.length > 0) {
-                  favorites = result.favorites;
+                if(result.favorites != null) {
+                  if(result.favorites.length > 0) {
+                    favorites = result.favorites;
+                  }
                 }
 
                 const isFavorite = isUserFavorite(new_favorite, favorites)
