@@ -7,5 +7,12 @@ module.exports = [{
         auth: 'session',
         handler: search.searchByArtist
       }
+    }, {
+    method : 'GET',
+    path: '/search',
+    config : {
+      auth: 'session',
+      handler: search.getSearchPage
     }
+  }
 ];

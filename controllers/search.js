@@ -40,3 +40,10 @@ module.exports.searchByArtist = (request, reply) => {
 
 }
 
+module.exports.getSearchPage = (request, reply) => {
+
+  return reply.view('search', {
+    'user' : {username: request.auth.credentials.username},
+    'artist' : null
+  });
+};
