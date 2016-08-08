@@ -18,7 +18,7 @@ server.register([require('hapi-auth-cookie'),
                 require('vision')], (err) => {
 
     server.auth.strategy('session', 'cookie', {
-      password: "8JJA4uKNX8vpCZtFjBswA8y7nYZ2UWz3",
+      password: "8JJA4uKNX8vpCZtFjBswA8y7nYZ2UWz3444",
       cookie: 'sid-example',
       redirectTo: '/',
       isSecure: false
