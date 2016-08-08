@@ -25,6 +25,20 @@ block content
                                 th Artist
                                 th
                                 tbody
+
+      div(class="modal fade", id="modalConfirm", tabindex="-1", role="dialog", aria-labelledby="myModalLabel", aria-hidden="true")
+            div(class="modal-dialog")
+                div(class="modal-content")
+                    div(class="modal-header")
+                      button.close(type='button', data-dismiss='modal', aria-label='Close')
+                        span(aria-hidden='true') ×
+                    div(class="modal-body")
+                      div(class="alert alert-success")
+                        p(style="font-size:50px;")
+                          strong SUCESS!
+                          i.fa.fa-check(aria-hidden='true')
+                      .modal-footer
+                            button.btn.btn-default(type='button', data-dismiss='modal') Close
       script.
         $(document).ready(function(){
           $('#submit-search').click(function(){
