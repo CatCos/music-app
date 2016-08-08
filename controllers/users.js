@@ -121,46 +121,81 @@ module.exports.findFavorites = (request, reply) => {
 
 }
 
+
 module.exports.addFavorite = (request, reply) => {
 
   const data = request.payload
-  const user_id = 2;
+  const user_id = request.auth.credentials.id;
 
-  models.user.findOne({
-    attributes: ['favorites'],
-    where: {
-      id: user_id
-    }
-  }).then((result) => {
-    let favorites = []
-      if(result.favorites.length > 0) {
-        favorites = JSON.parse(result.favorites);
-      }
+  let path ="/v1/artists/" + data.mkid +"/?appkey=123456789&appid=123456789"
+  path = path.replace(/\s/g, "+")
 
-      const isFavorite = isUserFavorite(data, favorites)
+  https.get({
+    host: 'music-api.musikki.com',
+    path : path,
+  }, (response) => {
+        // Continuously update stream with data
+        let body = '';
+        let artists = [];
 
-      if(!isFavorite) {
+        response.on('data', (d) => {
+            body += d;
+        });
 
-        favorites.push({'id' : data.mkid, 'name': data.name})
+        response.on('end', () => {
+          let artist_information = JSON.parse(body);
+          artist_information = artist_information.result
 
-        models.user.update(
-        {
-          favorites : favorites
-        }, {
-        where: {
-          id: user_id
-        }
-        }).then((result) => {
+          models.user.findOne({
+            attributes: ['favorites'],
+            where: {
+              id: user_id
+            }
+          }).then((result) => {
+              models.user.findOne({
+                attributes: ['favorites'],
+                where: {
+                  id: user_id
+                }
+              }).then((result) => {
+                let favorites = []
 
-          reply({
-            "error" : false,
-            "message" : "success",
-            "data" : favorites
+                var new_favorite = {
+                  'mkid' : artist_information.mkid,
+                  'name' : artist_information.name,
+                  'photo' : artist_information.image}
+
+                if(result.favorites.length > 0) {
+                  favorites = result.favorites;
+                }
+
+                const isFavorite = isUserFavorite(new_favorite, favorites)
+
+                if(!isFavorite) {
+
+                  favorites.push(new_favorite)
+
+                  models.user.update(
+                  {
+                    favorites : favorites
+                  }, {
+                  where: {
+                    id: user_id
+                  }
+                  }).then((result) => {
+
+                    reply({
+                      "error" : false,
+                      "message" : "success",
+                      "data" : favorites
+                    });
+                  })
+                }
+
+                });
+              });
+            });
           });
-        })
-      }
-
-    });
 };
 
 module.exports.deleteFavorite = (request, reply) => {
@@ -168,7 +203,6 @@ module.exports.deleteFavorite = (request, reply) => {
   const data = request.payload
   const user_id = request.auth.credentials.id;
 
-  console.log(data)
   models.user.findOne({
     attributes: ['favorites'],
     where: {
@@ -182,7 +216,7 @@ module.exports.deleteFavorite = (request, reply) => {
       if(isFavorite) {
 
         for(let i = favorites.length-1; i >= 0; i--) {
-            if(favorites[i].id == data.mkid) {
+            if(favorites[i].mkid == data.mkid) {
             favorites.splice(i, 1);
           }
         }
