@@ -1,18 +1,10 @@
 $(document).on("click", "button.followButton", function(e){
     e.preventDefault();
     $button = $(this);
-    if($button.hasClass('following')){
-
-        //$.ajax(); Do Unfollow
-
-        $button.removeClass('following');
-        $button.removeClass('unfollow');
-        $button.text('Follow');
-    } else {
+    if(!$button.hasClass('following')){
 
         // $.ajax(); Do Follow
         var data = "artist:" + $button.id
-        console.log(this.id)
         var settings = {
           "async": true,
           "crossDomain": true,
