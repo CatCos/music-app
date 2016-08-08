@@ -116,9 +116,11 @@ module.exports.findFavorites = (request, reply) => {
       id: user_id
     }
   }).then((result) => {
-      let favorites = JSON.parse(JSON.stringify(result.favorites));
-
-      favorites = sortByKey(favorites, 'name');
+      let favorites = []
+      if(result.favorites.length > 0) {
+        favorites= JSON.parse(JSON.stringify(result.favorites));
+        favorites = sortByKey(favorites, 'name');
+      }
 
       return reply.view('user_favorites', {
         'favorites' : favorites,
