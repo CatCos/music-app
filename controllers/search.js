@@ -31,7 +31,7 @@ module.exports.searchByArtist = (request, reply) => {
         response.on('end', () => {
             let results = JSON.parse(body).results;
 
-            users.getFavoriteArtists(results, 4, reply)
+            users.getFavoriteArtists(results, request.auth.credentials, reply)
         });
 
     }).on('error', (e) => {
@@ -39,3 +39,4 @@ module.exports.searchByArtist = (request, reply) => {
     });
 
 }
+

@@ -50,15 +50,18 @@ module.exports.create = (request, reply) => {
  * Returns a list of artists, with indication if they are a favorite of the user
  * or not
  */
-module.exports.getFavoriteArtists = (results, user_id, reply) => {
-
+module.exports.getFavoriteArtists = (results, user, reply) => {
   models.user.findOne({
       attributes: ['favorites'],
       where: {
-        id: user_id
+        id: user.id
       }
     }).then((result) => {
-        let favorites = JSON.parse(JSON.stringify(result.favorites));
+        let favorites = [];
+        if(result.favorites.length > 0){
+          favorites = JSON.parse(JSON.stringify(result.favorites));
+        }
+
         let artists = [];
         let isFavorite = false;
 
@@ -67,9 +70,11 @@ module.exports.getFavoriteArtists = (results, user_id, reply) => {
           artists.push({
             'id' : results[i].mkid,
             'name' : results[i].name,
+            'photo' : results[i].image,
             'is_favorite' : isFavorite
           });
         }
+
 
         reply(artists);
     });
