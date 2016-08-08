@@ -2,6 +2,9 @@ const Joi = require('joi');
 const models = require("../models");
 const bcrypt = require('bcrypt');
 
+/**
+ * Manages login
+ */
 module.exports.login = (request, reply) => {
   getValidatedUser(request.payload.username, request.payload.password)
   .then(function(user){
@@ -24,6 +27,9 @@ module.exports.login = (request, reply) => {
   });
 };
 
+/**
+ * Verifies user's password
+ */
 function getValidatedUser(username, password){
     return new Promise(function(fulfill, reject){
 
@@ -55,9 +61,12 @@ function getValidatedUser(username, password){
     });
 }
 
+/**
+ * Manages logout
+ */
+
 module.exports.logout = (request, reply) => {
   request.cookieAuth.clear();
-  //return reply.redirect('/');
   return reply.redirect('/')
 
 };

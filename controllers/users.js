@@ -8,6 +8,9 @@ const bcrypt = require('bcrypt');
 const https = require('https')
 const sequelize = require('sequelize')
 
+/**
+ * Creates a new user
+ */
 module.exports.create = (request, reply) => {
 
   const salt = bcrypt.genSaltSync();
@@ -28,7 +31,6 @@ module.exports.create = (request, reply) => {
 
       }).then(function(user)
       {
-
         return reply.view('index', {
           'invalid_user' : 1,
           'wrong' : 0,
@@ -102,7 +104,7 @@ const isUserFavorite = (artist, favorites) => {
 }
 
 /**
-  * Returns the favorites artists of the user
+  * Returns the favorite artists of the user
   */
 module.exports.findFavorites = (request, reply) => {
 
@@ -115,7 +117,9 @@ module.exports.findFavorites = (request, reply) => {
     }
   }).then((result) => {
       let favorites = JSON.parse(JSON.stringify(result.favorites));
+
       favorites = sortByKey(favorites, 'name');
+
       return reply.view('user_favorites', {
         'favorites' : favorites,
         'user' : {username: request.auth.credentials.username}
@@ -125,6 +129,9 @@ module.exports.findFavorites = (request, reply) => {
 
 }
 
+/**
+ * Sorts an array of objects by key
+ */
 function sortByKey(array, key) {
     return array.sort(function(a, b) {
         var x = a[key]; var y = b[key];
@@ -132,6 +139,9 @@ function sortByKey(array, key) {
     });
 }
 
+/**
+ * Adds a new favorite artist to the user
+ */
 module.exports.addFavorite = (request, reply) => {
 
   const data = request.payload
@@ -144,7 +154,6 @@ module.exports.addFavorite = (request, reply) => {
     host: 'music-api.musikki.com',
     path : path,
   }, (response) => {
-        // Continuously update stream with data
         let body = '';
         let artists = [];
 
@@ -208,6 +217,9 @@ module.exports.addFavorite = (request, reply) => {
           });
 };
 
+/**
+ * Removes favorite artist from the list of favorites of the user
+ */
 module.exports.deleteFavorite = (request, reply) => {
 
   const data = request.payload

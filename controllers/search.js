@@ -40,6 +40,9 @@ module.exports.searchByArtist = (request, reply) => {
 
 }
 
+/**
+ * Returns html of search page
+ */
 module.exports.getSearchPage = (request, reply) => {
 
   return reply.view('search', {
