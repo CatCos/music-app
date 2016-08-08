@@ -4,27 +4,68 @@ block content
     include navbar/navbar_user.jade
     div(class="container")
         div(class="row")
-        br
-        div(class="row")
             div(class="col-lg-12 col-sm-12")
               div(class="panel panel-default panelStyle")
                   div(class="panel-body")
                       h2
                           strong Your Favorite Artists
                       div(class="row")
-                        div(class="col-lg-12 col-sm-12")
+                        div(class="col-lg-8 col-sm-8")
                             table(class="table table-hover table-style")
                                 thead
                                     th
-                                    th Artist
                                     th
+                                    th Artist
+                                    th Unfollow
                                     tbody
-                                        each favorite in favorites
+                                      each favorite in favorites
                                           tr
-                                            td
-                                              p  #{favorite.id}
-                                            td
+                                            td(style='width:160px;')
+                                                img(alt="Avatar", src = favorite.photo, width="150", height="150")
+                                            td(style='width:80px;')
+                                              p  #{favorite.mkid}
+                                            td(style='width:500px;')
                                               p  #{favorite.name}
                                             td
-                                              p
-                                                i.fa.fa-trash(aria-hidden='true', style="color: green")
+                                              a(href="#")
+                                                i.fa.fa-times-circle(aria-hidden='true', id=favorite.mkid + "-" + favorite.name, style="color: red; font-size: 30px;", data-toggle="modal", data-target="#modalConfirm")
+
+                                                div(class="modal fade", id="modalConfirm", tabindex="-1", role="dialog", aria-labelledby="myModalLabel", aria-hidden="true")
+                                                      div(class="modal-dialog")
+                                                          div(class="modal-content")
+                                                              div(class="modal-header")
+                                                                button.close(type='button', data-dismiss='modal', aria-label='Close')
+                                                                  span(aria-hidden='true') ×
+                                                                h4.modal-title Modal title
+                                                              div(class="modal-body")
+                                                                  p(id="modal-warning")
+                                                                  br
+                                                                  .modal-footer
+                                                                        button.btn.btn-default(type='button', data-dismiss='modal') Close
+                                                                        button.btn.btn-primary(type='button',id="delete-favorite") Save changes
+
+
+
+          script.
+            var id;
+            var name;
+            $(document).ready(function() {
+              $(".fa").click(function(){
+                  var data = this.id.split("-");
+                  id = data[0]
+                  name = data[1]
+                  var str= "Are you sure you want to remove " + name + " from favorites?"
+                  $('#modal-warning').text(str);
+              });
+
+              $("#delete-favorite").click(function(){
+                  $.ajax({
+                      url: '/favorites/delete',
+                      type: 'DELETE',
+                      data : {mkid : id, name : name},
+                      success: function(result) {
+                          location.replace('/users/favorites')
+                      }
+                  });
+              })
+            });

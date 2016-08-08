@@ -13,7 +13,7 @@ module.exports.searchByArtist = (request, reply) => {
 
   const query = request.payload;
 
-  let path =  '/v1/artists?q=' + query.artist + '&appkey=123456789&appid=123456789';
+  let path =  '/v1/artists?q=[artist-name:' + query.artist + ']&appkey=123456789&appid=123456789';
   path = path.replace(/\s/g, "+")
 
   https.get({
@@ -31,7 +31,7 @@ module.exports.searchByArtist = (request, reply) => {
         response.on('end', () => {
             let results = JSON.parse(body).results;
 
-            users.getFavoriteArtists(results, 4, reply)
+            users.getFavoriteArtists(results, request.auth.credentials, reply)
         });
 
     }).on('error', (e) => {
@@ -39,3 +39,14 @@ module.exports.searchByArtist = (request, reply) => {
     });
 
 }
+
+/**
+ * Returns html of search page
+ */
+module.exports.getSearchPage = (request, reply) => {
+
+  return reply.view('search', {
+    'user' : {username: request.auth.credentials.username},
+    'artist' : null
+  });
+};

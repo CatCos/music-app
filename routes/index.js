@@ -19,6 +19,13 @@ const index = [
     handler: {
       directory: { path: 'public/css' }
     }
+  },{
+    method: "GET",
+    path: "/js/{param*}",
+    handler: {
+      directory: { path: 'public/js' }
+    }
   }
+
 ]
 module.exports = [].concat(index, auth, user,  search);

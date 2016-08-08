@@ -14,9 +14,11 @@ module.exports = [
       method : 'PUT',
       path : '/favorites/add',
       config : {
-        auth: 'session',
-        handler : user.addFavorite
+        auth:  {strategy : 'session'},
+        handler: user.addFavorite,
+        plugins: { 'hapi-auth-cookie': { redirectTo: '/' } }
       }
+
     },
     {
       method : 'DELETE',
