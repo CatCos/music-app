@@ -13,7 +13,7 @@ module.exports.searchByArtist = (request, reply) => {
 
   const query = request.payload;
 
-  let path =  '/v1/artists?q=' + query.artist + '&appkey=123456789&appid=123456789';
+  let path =  '/v1/artists?q=[artist-name:' + query.artist + ']&appkey=123456789&appid=123456789';
   path = path.replace(/\s/g, "+")
 
   https.get({
