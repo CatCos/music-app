@@ -151,7 +151,7 @@ module.exports.addFavorite = (request, reply) => {
   const data = request.payload
   const user_id = request.auth.credentials.id;
 
-  let path ="/v1/artists/" + data.mkid +"/?appkey=123456789&appid=123456789"
+  let path ='/v1/artists/' + data.mkid + '/?&appkey=' + process.env.API_KEY + '&appid=' + process.env.API_ID;
   path = path.replace(/\s/g, "+")
 
   https.get({
