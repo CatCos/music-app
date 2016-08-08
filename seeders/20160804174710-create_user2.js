@@ -5,9 +5,10 @@ module.exports = {
       let date = new Date().getTime();
 
       return queryInterface.bulkInsert('users', [{
-        username: 'CatCos',
-        password: 'ola',
-        favorites : JSON.stringify({id: '100531923', name : 'Lady Gaga' }, {'id' : 100000192, 'name' : 'Queen'}),
+        username: 'user1',
+        password: 'ola1',
+        favorites : JSON.stringify({"mkid":100014423,"name":"Bon Jovi","photo":"https://twitter.com/bonjovi/profile_image?size=original"},
+        {"mkid":100000910,"name":"ABBA","photo":"https://graph.facebook.com/124611394231248/picture?width=600"}),
         createdAt: new Date(),
         updatedAt:new Date()
       }], {});
