@@ -70,7 +70,7 @@ block content
 							type: 'DELETE',
 							data : {mkid : id, name : name},
 							success: function(result) {
-								var url = '/user/' + result.username + '/favorites'
+								var url = '/user/' + result.user + '/favorites'
 								location.replace(url)
 							}
 						});
