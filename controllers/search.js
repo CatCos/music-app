@@ -13,8 +13,9 @@ module.exports.searchByArtist = (request, reply) => {
 
   const query = request.payload;
 
+  query.artist = query.artist.replace('&', 'e')
   let path =  '/v1/artists?q=[artist-name:' + query.artist + ']&appkey=' + process.env.API_KEY + '&appid=' + process.env.API_ID;
-  path = path.replace(/\s/g, "+")
+  path = encodeURI(path)
 
   https.get({
     host: 'music-api.musikki.com',
