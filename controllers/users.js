@@ -147,11 +147,13 @@ module.exports.findFavorites = (request, reply) => {
         response.on('end', () => {
           let artist_information = JSON.parse(body);
           artist_information = artist_information.result
-
+          let bio = ""
+          if(artist_information.bio != null)
+            bio = artist_information.bio.summary
           artists_results.push({
             'mkid': listItem.mkid,
             'name': listItem.name,
-            'summary': artist_information.bio.summary,
+            'summary': bio,
             'photo': artist_information.image
           })
 
@@ -285,7 +287,7 @@ module.exports.deleteFavorite = (request, reply) => {
         }
       }).then((result) => {
         return reply({
-          data: 'success'
+          user: request.auth.credentials.username
         })
       });
     }
