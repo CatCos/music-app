@@ -47,3 +47,32 @@ $(document).on("hover", "button.followButton", function(e){
         $button.text('Following');
     }
 });
+
+
+function getArtists(value) {
+  $.post("/search", {artist: value}, function(result){
+    $("#table-results > tbody").html("");
+    for(var i = 0; i < result.length; i++) {
+        var elem = "<tr><td style='width:160px;'><img src='" +result[i].photo + "' class='img-rounded' height='150' width='150'></td><td style='width:80px;'>" + result[i].mkid + "</td><td>" + result[i].name + "</td>"
+
+        elem = elem + "<td><p>"
+        var genres = result[i].genres
+        for(var j = 0; j < genres.length;j++) {
+          elem = elem + genres[j].name + "<br>"
+        }
+        elem = elem + "</p></td>"
+        if(result[i].is_favorite) {
+          elem = elem + "<td><button class='btn-follow followButton following' rel='6' id=" + result[i].mkid + ">Following</button></td><tr>"
+        }
+        else {
+          elem = elem + "<td><button class='btn-follow followButton' rel='6' id=" + result[i].mkid +
+          ">Follow</button><div class='alert alert-success fade in' style='display: none;' id=alert-" + result[i].mkid  +
+           "><a href='#' class='close' data-dismiss='alert' aria-label='close'>&times;</a><strong>Success!</strong></div></td><tr>"
+        }
+        $('#table-results > tbody:last-child').append(elem);
+      }
+
+      $('#results').show();
+      $('#search').val("")
+    });
+}
