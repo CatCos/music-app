@@ -22,7 +22,6 @@ module.exports.login = (request, reply) => {
       }
     })
     .catch(function(err) {
-      console.log(err)
       return reply({
         'error': err
       });

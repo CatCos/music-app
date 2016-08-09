@@ -116,12 +116,14 @@ module.exports.findFavorites = (request, reply) => {
       id: user_id
     }
   }).then((result) => {
+
     let favorites = []
     if (result.favorites != null) {
       favorites = JSON.parse(JSON.stringify(result.favorites));
     }
+
     let artists_results = []
-    if(favorites.length == 0) {
+    if (favorites.length == 0) {
       return reply.view('user_favorites', {
         'favorites': favorites,
         'user': {
@@ -129,6 +131,7 @@ module.exports.findFavorites = (request, reply) => {
         }
       });
     }
+
     favorites.forEach(function(listItem, index) {
       let path = '/v1/artists/' + listItem.mkid + '/?&appkey=' + process.env.API_KEY + '&appid=' + process.env.API_ID;
       path = encodeURI(path)
@@ -147,9 +150,12 @@ module.exports.findFavorites = (request, reply) => {
         response.on('end', () => {
           let artist_information = JSON.parse(body);
           artist_information = artist_information.result
+
           let bio = ""
-          if(artist_information.bio != null)
+          if (artist_information.bio != null) {
             bio = artist_information.bio.summary
+          }
+
           artists_results.push({
             'mkid': listItem.mkid,
             'name': listItem.name,
@@ -159,6 +165,7 @@ module.exports.findFavorites = (request, reply) => {
 
           if (artists_results.length == favorites.length) {
             favorites = sortByKey(artists_results, 'name');
+
             return reply.view('user_favorites', {
               'favorites': artists_results,
               'user': {
