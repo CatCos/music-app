@@ -119,14 +119,43 @@ module.exports.findFavorites = (request, reply) => {
     let favorites = []
     if (result.favorites != null) {
       favorites = JSON.parse(JSON.stringify(result.favorites));
-      favorites = sortByKey(favorites, 'name');
-    }
 
-    return reply.view('user_favorites', {
-      'favorites': favorites,
-      'user': {
-        username: request.auth.credentials.username
-      }
+    }
+    let artists_results = []
+    console.log(favorites.length)
+    favorites.forEach(function(listItem, index){
+      let path = '/v1/artists/' + listItem.mkid + '/?&appkey=' + process.env.API_KEY + '&appid=' + process.env.API_ID;
+      path = encodeURI(path)
+
+      https.get({
+        host: 'music-api.musikki.com',
+        path: path,
+      }, (response) => {
+        let body = '';
+        let artists = [];
+
+        response.on('data', (d) => {
+          body += d;
+        });
+
+        response.on('end', () => {
+          let artist_information = JSON.parse(body);
+          artist_information = artist_information.result
+
+          artists_results.push({'mkid' : listItem.mkid, 'name':listItem.name, 'summary' : artist_information.bio.summary, 'photo' : artist_information.image})
+
+          if(artists_results.length == favorites.length)
+          {
+            favorites = sortByKey(artists_results, 'name');
+            return reply.view('user_favorites', {
+              'favorites': artists_results,
+              'user': {
+                username: request.auth.credentials.username
+              }
+            });
+          }
+      })
+    });
     });
   });
 }
