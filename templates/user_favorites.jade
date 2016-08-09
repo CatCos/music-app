@@ -9,26 +9,30 @@ block content
                   div(class="panel-body")
                       h2
                           strong Your Favorite Artists
+                      br
+                      p Here you can see all the artists that you are following.
+                      br
+                      br
+
                       div(class="row")
-                        div(class="col-lg-8 col-sm-8")
-                            table(class="table table-hover table-style")
+                        div(class="col-lg-3 col-sm-3")
+                        div(class="col-lg-6 col-sm-6")
+                            table(class="table table-hover table-style  table-striped")
                                 thead
                                     th
-                                    th
                                     th Artist
-                                    th Unfollow
+                                    th(style="width:50px;") Unfollow
                                     tbody
                                       each favorite in favorites
                                           tr
-                                            td(style='width:160px;')
+                                            td(style='width:200px;')
                                                 img(alt="Avatar", src = favorite.photo, width="150", height="150")
-                                            td(style='width:80px;')
-                                              p  #{favorite.mkid}
-                                            td(style='width:500px;')
-                                              p  #{favorite.name}
-                                            td
+                                            td(style='width:300px;')
+                                              p
+                                                h3 #{favorite.name}
+                                            td(style="text-align: center;")
                                               a(href="#")
-                                                i.fa.fa-times-circle(aria-hidden='true', id=favorite.mkid + "-" + favorite.name, style="color: red; font-size: 30px;", data-toggle="modal", data-target="#modalConfirm")
+                                                i.fa.fa-times-circle(aria-hidden='true', id=favorite.mkid + "-" + favorite.name, style="color: red; font-size: 20px;", data-toggle="modal", data-target="#modalConfirm")
 
                                                 div(class="modal fade", id="modalConfirm", tabindex="-1", role="dialog", aria-labelledby="myModalLabel", aria-hidden="true")
                                                       div(class="modal-dialog")
@@ -41,8 +45,8 @@ block content
                                                                   p(id="modal-warning")
                                                                   br
                                                                   .modal-footer
-                                                                        button.btn.btn-default(type='button', data-dismiss='modal') Close
-                                                                        button.btn.btn-primary(type='button',id="delete-favorite") Save changes
+                                                                        button.btn.btn-success(type='button',id="delete-favorite") Yes
+                                                                        button.btn.btn-danger(type='button', data-dismiss='modal') No
 
 
 
