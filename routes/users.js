@@ -2,7 +2,7 @@ const user = require("../controllers/users.js");
 
 module.exports = [{
   method: 'GET',
-  path: '/users/favorites',
+  path: '/user/{name}/favorites',
   config: {
     auth: {
       strategy: 'session'

@@ -119,14 +119,53 @@ module.exports.findFavorites = (request, reply) => {
     let favorites = []
     if (result.favorites != null) {
       favorites = JSON.parse(JSON.stringify(result.favorites));
-      favorites = sortByKey(favorites, 'name');
     }
+    let artists_results = []
+    if(favorites.length == 0) {
+      return reply.view('user_favorites', {
+        'favorites': favorites,
+        'user': {
+          username: request.auth.credentials.username
+        }
+      });
+    }
+    favorites.forEach(function(listItem, index) {
+      let path = '/v1/artists/' + listItem.mkid + '/?&appkey=' + process.env.API_KEY + '&appid=' + process.env.API_ID;
+      path = encodeURI(path)
 
-    return reply.view('user_favorites', {
-      'favorites': favorites,
-      'user': {
-        username: request.auth.credentials.username
-      }
+      https.get({
+        host: 'music-api.musikki.com',
+        path: path,
+      }, (response) => {
+        let body = '';
+        let artists = [];
+
+        response.on('data', (d) => {
+          body += d;
+        });
+
+        response.on('end', () => {
+          let artist_information = JSON.parse(body);
+          artist_information = artist_information.result
+
+          artists_results.push({
+            'mkid': listItem.mkid,
+            'name': listItem.name,
+            'summary': artist_information.bio.summary,
+            'photo': artist_information.image
+          })
+
+          if (artists_results.length == favorites.length) {
+            favorites = sortByKey(artists_results, 'name');
+            return reply.view('user_favorites', {
+              'favorites': artists_results,
+              'user': {
+                username: request.auth.credentials.username
+              }
+            });
+          }
+        })
+      });
     });
   });
 }
@@ -174,48 +213,39 @@ module.exports.addFavorite = (request, reply) => {
           id: user_id
         }
       }).then((result) => {
-        models.user.findOne({
-          attributes: ['favorites'],
-          where: {
-            id: user_id
-          }
-        }).then((result) => {
-          let favorites = []
+        let favorites = []
 
-          var new_favorite = {
-            'mkid': artist_information.mkid,
-            'name': artist_information.name,
-            'photo': artist_information.image
-          }
+        var new_favorite = {
+          'mkid': artist_information.mkid,
+          'name': artist_information.name
+        }
 
-          if (result.favorites != null) {
-            if (result.favorites.length > 0) {
-              favorites = result.favorites;
+        if (result.favorites != null) {
+          if (result.favorites.length > 0) {
+            favorites = result.favorites;
+          }
+        }
+        const isFavorite = isUserFavorite(new_favorite, favorites)
+
+        if (!isFavorite) {
+
+          favorites.push(new_favorite)
+
+          models.user.update({
+            favorites: favorites
+          }, {
+            where: {
+              id: user_id
             }
-          }
+          }).then((result) => {
 
-          const isFavorite = isUserFavorite(new_favorite, favorites)
-
-          if (!isFavorite) {
-
-            favorites.push(new_favorite)
-
-            models.user.update({
-              favorites: favorites
-            }, {
-              where: {
-                id: user_id
-              }
-            }).then((result) => {
-
-              reply({
-                "error": false,
-                "message": "success",
-                "data": favorites
-              });
-            })
-          }
-        });
+            reply({
+              "error": false,
+              "message": "success",
+              "data": favorites
+            });
+          })
+        }
       });
     });
   });
