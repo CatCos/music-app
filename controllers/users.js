@@ -60,25 +60,26 @@ module.exports.getFavoriteArtists = (results, user, reply) => {
   }).then((result) => {
     let favorites = [];
 
+    let artists = [];
+    let isFavorite = false;
+
     if (result.favorites != null) {
       if (result.favorites.length > 0) {
         favorites = JSON.parse(JSON.stringify(result.favorites));
       }
     }
+    if (results != null) {
+      for (let i = 0; i < results.length; i++) {
+        isFavorite = isUserFavorite(results[i], favorites);
 
-    let artists = [];
-    let isFavorite = false;
-
-    for (let i = 0; i < results.length; i++) {
-      isFavorite = isUserFavorite(results[i], favorites);
-
-      artists.push({
-        'mkid': results[i].mkid,
-        'name': results[i].name,
-        'photo': results[i].image,
-        'is_favorite': isFavorite,
-        'genres': results[i].genres
-      });
+        artists.push({
+          'mkid': results[i].mkid,
+          'name': results[i].name,
+          'photo': results[i].image,
+          'is_favorite': isFavorite,
+          'genres': results[i].genres
+        });
+      }
     }
 
     reply(artists);
