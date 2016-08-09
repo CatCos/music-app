@@ -50,26 +50,26 @@ block content
 
 
 
-script.
-	var id;
-	var name;
-	$(document).ready(function() {
-		$(".fa").click(function(){
-			var data = this.id.split("-");
-			id = data[0]
-			name = data[1]
-			var str= "Are you sure you want to remove " + name + " from favorites?"
-			$('#modal-warning').text(str);
-		});
+	script.
+				var id;
+				var name;
+				$(document).ready(function() {
+					$(".fa").click(function(){
+						var data = this.id.split("-");
+						id = data[0]
+						name = data[1]
+						var str= "Are you sure you want to remove " + name + " from favorites?"
+						$('#modal-warning').text(str);
+					});
 
-		$("#delete-favorite").click(function(){
-			$.ajax({
-				url: '/favorites/delete',
-				type: 'DELETE',
-				data : {mkid : id, name : name},
-				success: function(result) {
-					location.replace('/users/favorites')
-				}
-			});
-		})
-	});
+					$("#delete-favorite").click(function(){
+						$.ajax({
+							url: '/favorites/delete',
+							type: 'DELETE',
+							data : {mkid : id, name : name},
+							success: function(result) {
+								location.replace('/users/favorites')
+							}
+						});
+					})
+				});

@@ -3,7 +3,8 @@ $(document).on("click", "button.followButton", function(e) {
   $button = $(this);
   if (!$button.hasClass('following')) {
 
-    // $.ajax(); Do Follow
+    // $.ajax(); Do Follow.
+    var artistName = $(this).attr("value")
     var mkid = this.id
     var data = "artist:" + $button.id
     var settings = {
@@ -20,13 +21,14 @@ $(document).on("click", "button.followButton", function(e) {
         "mkid": this.id
       }
     }
-
     $.ajax(settings).done(function(response) {
       console.log(response);
 
 
       $button.addClass('following');
       $button.text('Following');
+      var message = 'SUCESS! You are now following ' + artistName + '.';
+      $('#success-message').text(message)
       $(".alert").show();
     });
 
@@ -63,10 +65,9 @@ function getArtists(value) {
       }
       elem = elem + "</p></td>"
       if (result[i].is_favorite) {
-        elem = elem + "<td><button class='btn-follow followButton following' rel='6' id=" + result[i].mkid + ">Following</button></td><tr>"
+        elem = elem + "<td><button class='btn-follow followButton following' rel='6' id=" + result[i].mkid + " value=" + result[i].name + ">Following</button></td><tr>"
       } else {
-        elem = elem + "<td><button class='btn-follow followButton' rel='6' id=" + result[i].mkid +
-          ">Follow</button></td><tr>"
+        elem = elem + "<td><button class='btn-follow followButton' rel='6' id=" + result[i].mkid + " value='" + result[i].name + "'>Follow</button></td><tr>"
       }
       $('#table-results > tbody:last-child').append(elem);
     }
