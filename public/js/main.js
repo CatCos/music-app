@@ -27,13 +27,12 @@ $(document).on("click", "button.followButton", function(e){
 
           $button.addClass('following');
           $button.text('Following');
-          var alertdiv = '#alert-'+ mkid
-          console.log(alertdiv)
-          $(alertdiv).show();
+          $(".alert").show();
         });
 
     }
 });
+
 
 $(document).on("hover", "button.followButton", function(e){
    $button = $(this);
@@ -66,8 +65,7 @@ function getArtists(value) {
         }
         else {
           elem = elem + "<td><button class='btn-follow followButton' rel='6' id=" + result[i].mkid +
-          ">Follow</button><div class='alert alert-success fade in' style='display: none;' id=alert-" + result[i].mkid  +
-           "><a href='#' class='close' data-dismiss='alert' aria-label='close'>&times;</a><strong>Success!</strong></div></td><tr>"
+          ">Follow</button></td><tr>"
         }
         $('#table-results > tbody:last-child').append(elem);
       }
