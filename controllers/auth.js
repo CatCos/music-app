@@ -7,58 +7,60 @@ const bcrypt = require('bcrypt');
  */
 module.exports.login = (request, reply) => {
   getValidatedUser(request.payload.username, request.payload.password)
-  .then(function(user){
+    .then(function(user) {
 
-    if (user != null) {
-      request.cookieAuth.set(user);
+      if (user != null) {
+        request.cookieAuth.set(user);
 
-      return reply.redirect('/users/favorites');
-    } else {
-      return reply.view('index', {
-        'invalid_user' : 0,
-        'wrong' : 1,
-        'user_created' : 0
+        return reply.redirect('/users/favorites');
+      } else {
+        return reply.view('index', {
+          'invalid_user': 0,
+          'wrong': 1,
+          'user_created': 0
+        });
+      }
+    })
+    .catch(function(err) {
+      console.log(err)
+      return reply({
+        'error': err
       });
-    }
-  })
-  .catch(function(err){
-    console.log(err)
-    return reply({'error' :err});
-  });
+    });
 };
 
 /**
  * Verifies user's password
  */
-function getValidatedUser(username, password){
-    return new Promise(function(fulfill, reject){
+function getValidatedUser(username, password) {
+  return new Promise(function(fulfill, reject) {
 
-      models.user.findOne({
-        attributes :  ['id', 'username', 'password'],
-          where: {
-            username: username
-          }
-        }).then((result) => {
-          if(result != null) {
-            bcrypt.compare(password, result.password, function(err, res) {
-              if(res == true) {
-                return fulfill({
-                  'id' : result.id,
-                  'username' : result.username});
-              }
-              else {
-                  return fulfill(null);
-              }
+    models.user.findOne({
+      attributes: ['id', 'username', 'password'],
+      where: {
+        username: username
+      }
+    }).then((result) => {
+      if (result != null) {
+        bcrypt.compare(password, result.password, function(err, res) {
+          if (res == true) {
+            return fulfill({
+              'id': result.id,
+              'username': result.username
             });
+          } else {
+            return fulfill(null);
           }
-          else {
-            return reject({
-              "error" : true,
-              "message" : "failed",
-              "data" : "USER DOES NOT EXISTS"});
-          }
-      });
+        });
+      } else {
+        return reject({
+          "error": true,
+          "message": "failed",
+          "data": "USER DOES NOT EXISTS"
+        });
+      }
     });
+  });
 }
 
 /**

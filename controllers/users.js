@@ -17,32 +17,29 @@ module.exports.create = (request, reply) => {
   const hash = bcrypt.hashSync(request.payload.password, salt);
 
   models.user.findOne({
-    atributes : ['id', 'username'],
-    where : {
-      username : request.payload.username
+    atributes: ['id', 'username'],
+    where: {
+      username: request.payload.username
     }
   }).then((result) => {
 
-    if(result == null) {
-      models.user.create(
-      {
+    if (result == null) {
+      models.user.create({
         username: request.payload.username,
-        password : hash
+        password: hash
 
-      }).then(function(user)
-      {
+      }).then(function(user) {
         return reply.view('index', {
-          'invalid_user' : 0,
-          'wrong' : 0,
-          'user_created' : 1
-          });
+          'invalid_user': 0,
+          'wrong': 0,
+          'user_created': 1
+        });
       });
-    }
-    else {
+    } else {
       return reply.view('index', {
-        'invalid_user' : 1,
-        'wrong' : 0,
-        'user_created' : 0
+        'invalid_user': 1,
+        'wrong': 0,
+        'user_created': 0
       });
     }
   });
@@ -56,36 +53,36 @@ module.exports.create = (request, reply) => {
 module.exports.getFavoriteArtists = (results, user, reply) => {
 
   models.user.findOne({
-      attributes: ['favorites'],
-      where: {
-        id: user.id
+    attributes: ['favorites'],
+    where: {
+      id: user.id
+    }
+  }).then((result) => {
+    let favorites = [];
+
+    if (result.favorites != null) {
+      if (result.favorites.length > 0) {
+        favorites = JSON.parse(JSON.stringify(result.favorites));
       }
-    }).then((result) => {
-        let favorites = [];
-        if(result.favorites != null) {
-          if(result.favorites.length > 0){
-            favorites = JSON.parse(JSON.stringify(result.favorites));
-          }
-        }
+    }
 
-        let artists = [];
-        let isFavorite = false;
+    let artists = [];
+    let isFavorite = false;
 
-        for(let i = 0; i < results.length; i++) {
-          isFavorite = isUserFavorite(results[i], favorites);
+    for (let i = 0; i < results.length; i++) {
+      isFavorite = isUserFavorite(results[i], favorites);
 
-          artists.push({
-            'mkid' : results[i].mkid,
-            'name' : results[i].name,
-            'photo' : results[i].image,
-            'is_favorite' : isFavorite,
-            'genres' : results[i].genres
-          });
-        }
+      artists.push({
+        'mkid': results[i].mkid,
+        'name': results[i].name,
+        'photo': results[i].image,
+        'is_favorite': isFavorite,
+        'genres': results[i].genres
+      });
+    }
 
-
-        reply(artists);
-    });
+    reply(artists);
+  });
 };
 
 /**
@@ -93,11 +90,11 @@ module.exports.getFavoriteArtists = (results, user, reply) => {
  */
 const isUserFavorite = (artist, favorites) => {
 
-  if(favorites.length == 0) {
+  if (favorites.length == 0) {
     return false
   }
-  for(let i = 0; i < favorites.length; i++) {
-    if(favorites[i].mkid == artist.mkid) {
+  for (let i = 0; i < favorites.length; i++) {
+    if (favorites[i].mkid == artist.mkid) {
       return true
     }
   }
@@ -106,8 +103,8 @@ const isUserFavorite = (artist, favorites) => {
 }
 
 /**
-  * Returns the favorite artists of the user
-  */
+ * Returns the favorite artists of the user
+ */
 module.exports.findFavorites = (request, reply) => {
 
   const user_id = request.auth.credentials.id;
@@ -118,29 +115,30 @@ module.exports.findFavorites = (request, reply) => {
       id: user_id
     }
   }).then((result) => {
-      let favorites = []
-      if(result.favorites != null) {
-        favorites= JSON.parse(JSON.stringify(result.favorites));
-        favorites = sortByKey(favorites, 'name');
+    let favorites = []
+    if (result.favorites != null) {
+      favorites = JSON.parse(JSON.stringify(result.favorites));
+      favorites = sortByKey(favorites, 'name');
+    }
+
+    return reply.view('user_favorites', {
+      'favorites': favorites,
+      'user': {
+        username: request.auth.credentials.username
       }
-
-      return reply.view('user_favorites', {
-        'favorites' : favorites,
-        'user' : {username: request.auth.credentials.username}
-      });
-
+    });
   });
-
 }
 
 /**
  * Sorts an array of objects by key
  */
 function sortByKey(array, key) {
-    return array.sort(function(a, b) {
-        var x = a[key]; var y = b[key];
-        return ((x < y) ? -1 : ((x > y) ? 1 : 0));
-    });
+  return array.sort(function(a, b) {
+    var x = a[key];
+    var y = b[key];
+    return ((x < y) ? -1 : ((x > y) ? 1 : 0));
+  });
 }
 
 /**
@@ -151,76 +149,75 @@ module.exports.addFavorite = (request, reply) => {
   const data = request.payload
   const user_id = request.auth.credentials.id;
 
-  let path ='/v1/artists/' + data.mkid + '/?&appkey=' + process.env.API_KEY + '&appid=' + process.env.API_ID;
-  path = path.replace(/\s/g, "+")
+  let path = '/v1/artists/' + data.mkid + '/?&appkey=' + process.env.API_KEY + '&appid=' + process.env.API_ID;
+  path = encodeURI(path)
 
   https.get({
     host: 'music-api.musikki.com',
-    path : path,
+    path: path,
   }, (response) => {
-        let body = '';
-        let artists = [];
+    let body = '';
+    let artists = [];
 
-        response.on('data', (d) => {
-            body += d;
-        });
+    response.on('data', (d) => {
+      body += d;
+    });
 
-        response.on('end', () => {
-          let artist_information = JSON.parse(body);
-          artist_information = artist_information.result
+    response.on('end', () => {
+      let artist_information = JSON.parse(body);
+      artist_information = artist_information.result
 
-          models.user.findOne({
-            attributes: ['favorites'],
-            where: {
-              id: user_id
+      models.user.findOne({
+        attributes: ['favorites'],
+        where: {
+          id: user_id
+        }
+      }).then((result) => {
+        models.user.findOne({
+          attributes: ['favorites'],
+          where: {
+            id: user_id
+          }
+        }).then((result) => {
+          let favorites = []
+
+          var new_favorite = {
+            'mkid': artist_information.mkid,
+            'name': artist_information.name,
+            'photo': artist_information.image
+          }
+
+          if (result.favorites != null) {
+            if (result.favorites.length > 0) {
+              favorites = result.favorites;
             }
-          }).then((result) => {
-              models.user.findOne({
-                attributes: ['favorites'],
-                where: {
-                  id: user_id
-                }
-              }).then((result) => {
-                let favorites = []
+          }
 
-                var new_favorite = {
-                  'mkid' : artist_information.mkid,
-                  'name' : artist_information.name,
-                  'photo' : artist_information.image}
+          const isFavorite = isUserFavorite(new_favorite, favorites)
 
-                if(result.favorites != null) {
-                  if(result.favorites.length > 0) {
-                    favorites = result.favorites;
-                  }
-                }
+          if (!isFavorite) {
 
-                const isFavorite = isUserFavorite(new_favorite, favorites)
+            favorites.push(new_favorite)
 
-                if(!isFavorite) {
+            models.user.update({
+              favorites: favorites
+            }, {
+              where: {
+                id: user_id
+              }
+            }).then((result) => {
 
-                  favorites.push(new_favorite)
-
-                  models.user.update(
-                  {
-                    favorites : favorites
-                  }, {
-                  where: {
-                    id: user_id
-                  }
-                  }).then((result) => {
-
-                    reply({
-                      "error" : false,
-                      "message" : "success",
-                      "data" : favorites
-                    });
-                  })
-                }
-
-                });
+              reply({
+                "error": false,
+                "message": "success",
+                "data": favorites
               });
-            });
-          });
+            })
+          }
+        });
+      });
+    });
+  });
 };
 
 /**
@@ -238,29 +235,28 @@ module.exports.deleteFavorite = (request, reply) => {
     }
   }).then((result) => {
 
-      let favorites = JSON.parse(JSON.stringify(result.favorites));
-      const isFavorite = isUserFavorite(data, favorites)
+    let favorites = JSON.parse(JSON.stringify(result.favorites));
+    const isFavorite = isUserFavorite(data, favorites)
 
-      if(isFavorite) {
+    if (isFavorite) {
 
-        for(let i = favorites.length-1; i >= 0; i--) {
-            if(favorites[i].mkid == data.mkid) {
-            favorites.splice(i, 1);
-          }
+      for (let i = favorites.length - 1; i >= 0; i--) {
+        if (favorites[i].mkid == data.mkid) {
+          favorites.splice(i, 1);
         }
+      }
 
-        models.user.update(
-        {
-          favorites : favorites
-        }, {
+      models.user.update({
+        favorites: favorites
+      }, {
         where: {
           id: user_id
         }
-        }).then((result) => {
-          return  reply({data:'success'})
-
-        });
-      }
-
-    });
+      }).then((result) => {
+        return reply({
+          data: 'success'
+        })
+      });
+    }
+  });
 };
