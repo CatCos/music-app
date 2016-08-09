@@ -2,30 +2,32 @@ const auth = require('./auth');
 const user = require('./users');
 const search = require('./search');
 var Path = require('path');
-const index = [
-  {
-    method : 'GET',
+const index = [{
+    method: 'GET',
     path: '/',
-    handler: function (request, reply) {
-              return reply.view('index', {
-                'invalid_user' : 0,
-                'wrong' : 0
-              });
-          }
-  },
-  {
+    handler: function(request, reply) {
+      return reply.view('index', {
+        'invalid_user': 0,
+        'wrong': 0
+      });
+    }
+  }, {
     method: "GET",
     path: "/css/{param*}",
     handler: {
-      directory: { path: 'public/css' }
+      directory: {
+        path: 'public/css'
+      }
     }
-  },{
+  }, {
     method: "GET",
     path: "/js/{param*}",
     handler: {
-      directory: { path: 'public/js' }
+      directory: {
+        path: 'public/js'
+      }
     }
   }
 
 ]
-module.exports = [].concat(index, auth, user,  search);
+module.exports = [].concat(index, auth, user, search);

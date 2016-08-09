@@ -5,34 +5,35 @@ const models = require('./models');
 const Sequelize = require('sequelize')
 const Jade = require('jade');
 const Path = require('path')
-// Create a server with a host and port
+  // Create a server with a host and port
 const server = new Hapi.Server();
 
 server.connection({
-    host: process.env.HOST,
-    port: process.env.PORT
+  host: process.env.HOST,
+  port: process.env.PORT
 });
 
 server.register([require('hapi-auth-cookie'),
-                require('inert'),
-                require('vision')], (err) => {
+  require('inert'),
+  require('vision')
+], (err) => {
 
-    server.auth.strategy('session', 'cookie', {
-      password: "8JJA4uKNX8vpCZtFjBswA8y7nYZ2UWz3444",
-      cookie: 'sid-example',
-      redirectTo: '/',
-      isSecure: false
-    });
+  server.auth.strategy('session', 'cookie', {
+    password: "8JJA4uKNX8vpCZtFjBswA8y7nYZ2UWz3444",
+    cookie: 'sid-example',
+    redirectTo: '/',
+    isSecure: false
+  });
 
 
   server.views({
     engines: {
-        jade: Jade
+      jade: Jade
     },
     path: Path.join(__dirname, 'templates')
   });
 
-    server.route(routes);
+  server.route(routes);
 });
 
 // Start the server
@@ -40,9 +41,9 @@ server.register([require('hapi-auth-cookie'),
 models.sequelize.sync().then(function() {
   server.start((err) => {
 
-      if (err) {
-          throw err;
-      }
-      console.log('Server running at:', server.info.uri);
+    if (err) {
+      throw err;
+    }
+    console.log('Server running at:', server.info.uri);
   });
 });
