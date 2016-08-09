@@ -4,6 +4,7 @@ $(document).on("click", "button.followButton", function(e){
     if(!$button.hasClass('following')){
 
         // $.ajax(); Do Follow
+        var mkid=this.id
         var data = "artist:" + $button.id
         var settings = {
           "async": true,
@@ -26,8 +27,9 @@ $(document).on("click", "button.followButton", function(e){
 
           $button.addClass('following');
           $button.text('Following');
-
-          $('#modalConfirm').modal('toggle');
+          var alertdiv = '#alert-'+ mkid
+          console.log(alertdiv)
+          $(alertdiv).show();
         });
 
     }
