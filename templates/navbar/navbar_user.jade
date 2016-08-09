@@ -6,13 +6,13 @@ nav(class="navbar navbar-default navbar-inverse", role="navigation", style="heig
 				span.icon-bar
 				span.icon-bar
 				span.icon-bar
-			a.navbar-brand(href='/users/favorites') Musikki Favorites App
+			a.navbar-brand(href='/user/' + user.username + '/favorites') Musikki Favorites App
 		div(class="collapse navbar-collapse" id="bs-example-navbar-collapse-1")
 			ul(id="navbar-user", class="nav navbar-nav user-nav navbar-right nav-pills")
 				li
 					a(href='/search', style="color: white;")  Search Artists
 				li
-					a(href='/users/favorites', style="color: white;")  Favorites
+					a(href='/user/' + user.username + '/favorites', style="color: white;")  Favorites
 				li
 					a(href='#', style="color: white;")  #{user.username}
 				li

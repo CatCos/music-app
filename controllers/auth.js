@@ -12,7 +12,7 @@ module.exports.login = (request, reply) => {
       if (user != null) {
         request.cookieAuth.set(user);
 
-        return reply.redirect('/users/favorites');
+        return reply.redirect('/user/' + user.username + '/favorites');
       } else {
         return reply.view('index', {
           'invalid_user': 0,
