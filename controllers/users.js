@@ -32,7 +32,7 @@ module.exports.create = (request, reply) => {
       }).then(function(user)
       {
         return reply.view('index', {
-          'invalid_user' : 1,
+          'invalid_user' : 0,
           'wrong' : 0,
           'user_created' : 1
           });
