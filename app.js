@@ -19,7 +19,7 @@ server.register([require('hapi-auth-cookie'),
 ], (err) => {
 
   server.auth.strategy('session', 'cookie', {
-    password: "8JJA4uKNX8vpCZtFjBswA8y7nYZ2UWz3444",
+    password: process.env.COOKIE_PASS,
     cookie: 'sid-example',
     redirectTo: '/',
     isSecure: false
