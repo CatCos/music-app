@@ -4,6 +4,7 @@ const Hapi = require('hapi');
 const Promise = require('promise');
 const models = require("../models");
 
+const Wreck = require('wreck');
 const bcrypt = require('bcrypt');
 const https = require('https')
 const sequelize = require('sequelize')
@@ -71,7 +72,6 @@ module.exports.getFavoriteArtists = (results, user, reply) => {
     if (results != null) {
       for (let i = 0; i < results.length; i++) {
         isFavorite = isUserFavorite(results[i], favorites);
-
         artists.push({
           'mkid': results[i].mkid,
           'name': results[i].name,
@@ -133,51 +133,44 @@ module.exports.findFavorites = (request, reply) => {
     }
 
     favorites.forEach(function(listItem, index) {
-      let path = '/v1/artists/' + listItem.mkid + '/?&appkey=' + process.env.API_KEY + '&appid=' + process.env.API_ID;
+      let path = 'https://music-api.musikki.com/v1/artists/' + listItem.mkid +
+        '/?&appkey=' + process.env.API_KEY + '&appid=' + process.env.API_ID;
+
       path = encodeURI(path)
 
-      https.get({
-        host: 'music-api.musikki.com',
-        path: path,
-      }, (response) => {
-        let body = '';
-        let artists = [];
+      Wreck.get(path, {
+        acceptEncoding: false
+      }, (err, res, payload) => {
+        let artist_information = JSON.parse(payload.toString())
+        artist_information = artist_information.result
 
-        response.on('data', (d) => {
-          body += d;
-        });
+        let bio = ""
+        if (artist_information.bio != null) {
+          bio = artist_information.bio.summary
+        }
 
-        response.on('end', () => {
-          let artist_information = JSON.parse(body);
-          artist_information = artist_information.result
-
-          let bio = ""
-          if (artist_information.bio != null) {
-            bio = artist_information.bio.summary
-          }
-
-          artists_results.push({
-            'mkid': listItem.mkid,
-            'name': listItem.name,
-            'summary': bio,
-            'photo': artist_information.image
-          })
-
-          if (artists_results.length == favorites.length) {
-            favorites = sortByKey(artists_results, 'name');
-
-            return reply.view('user_favorites', {
-              'favorites': artists_results,
-              'user': {
-                username: request.auth.credentials.username
-              }
-            });
-          }
+        artists_results.push({
+          'mkid': listItem.mkid,
+          'name': listItem.name,
+          'summary': bio,
+          'photo': artist_information.image
         })
-      });
+
+        if (artists_results.length == favorites.length) {
+          favorites = sortByKey(artists_results, 'name');
+
+          return reply.view('user_favorites', {
+            'favorites': artists_results,
+            'user': {
+              username: request.auth.credentials.username
+            }
+          });
+        }
+      })
     });
   });
 }
+
 
 /**
  * Sorts an array of objects by key
@@ -198,64 +191,55 @@ module.exports.addFavorite = (request, reply) => {
   const data = request.payload
   const user_id = request.auth.credentials.id;
 
-  let path = '/v1/artists/' + data.mkid + '/?&appkey=' + process.env.API_KEY + '&appid=' + process.env.API_ID;
+  let path = 'https://music-api.musikki.com//v1/artists/' + data.mkid +
+    '/?&appkey=' + process.env.API_KEY + '&appid=' + process.env.API_ID;
   path = encodeURI(path)
 
-  https.get({
-    host: 'music-api.musikki.com',
-    path: path,
-  }, (response) => {
-    let body = '';
-    let artists = [];
+  Wreck.get(path, {
+    acceptEncoding: false
+  }, (err, res, payload) => {
+    let artist_information = JSON.parse(payload.toString())
+    artist_information = artist_information.result
 
-    response.on('data', (d) => {
-      body += d;
-    });
+    models.user.findOne({
+      attributes: ['favorites'],
+      where: {
+        id: user_id
+      }
+    }).then((result) => {
+      let favorites = []
 
-    response.on('end', () => {
-      let artist_information = JSON.parse(body);
-      artist_information = artist_information.result
+      const new_favorite = {
+        'mkid': artist_information.mkid,
+        'name': artist_information.name
+      }
 
-      models.user.findOne({
-        attributes: ['favorites'],
-        where: {
-          id: user_id
+      if (result.favorites != null) {
+        if (result.favorites.length > 0) {
+          favorites = result.favorites;
         }
-      }).then((result) => {
-        let favorites = []
+      }
+      const isFavorite = isUserFavorite(new_favorite, favorites)
 
-        var new_favorite = {
-          'mkid': artist_information.mkid,
-          'name': artist_information.name
-        }
+      if (!isFavorite) {
 
-        if (result.favorites != null) {
-          if (result.favorites.length > 0) {
-            favorites = result.favorites;
+        favorites.push(new_favorite)
+
+        models.user.update({
+          favorites: favorites
+        }, {
+          where: {
+            id: user_id
           }
-        }
-        const isFavorite = isUserFavorite(new_favorite, favorites)
+        }).then((result) => {
 
-        if (!isFavorite) {
-
-          favorites.push(new_favorite)
-
-          models.user.update({
-            favorites: favorites
-          }, {
-            where: {
-              id: user_id
-            }
-          }).then((result) => {
-
-            reply({
-              "error": false,
-              "message": "success",
-              "data": favorites
-            });
-          })
-        }
-      });
+          reply({
+            "error": false,
+            "message": "success",
+            "data": favorites
+          });
+        })
+      }
     });
   });
 };
