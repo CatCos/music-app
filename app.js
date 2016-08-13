@@ -33,7 +33,9 @@ server.register([require('hapi-auth-cookie'),
     path: Path.join(__dirname, 'templates')
   });
 
-  server.route(routes);
+  for (var route in routes) {
+    server.route(routes[route]);
+}
 });
 
 // Start the server
