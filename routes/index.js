@@ -1,33 +1,18 @@
 const auth = require('./auth');
 const user = require('./users');
 const search = require('./search');
-var Path = require('path');
-const index = [{
-    method: 'GET',
-    path: '/',
-    handler: function(request, reply) {
-      return reply.view('index', {
-        'invalid_user': 0,
-        'wrong': 0
-      });
-    }
-  }, {
-    method: "GET",
-    path: "/css/{param*}",
-    handler: {
-      directory: {
-        path: 'public/css'
-      }
-    }
-  }, {
-    method: "GET",
-    path: "/js/{param*}",
-    handler: {
-      directory: {
-        path: 'public/js'
-      }
-    }
-  }
+const static = require('./static_files')
+const fs = require('fs');
+const path = require('path');
+const basename = path.basename(module.filename);
 
-]
-module.exports = [].concat(index, auth, user, search);
+const routes = fs.readdirSync(__dirname)
+  .filter((file) => {
+    return (file.indexOf('.') !== 0) && (file !== basename);
+  })
+  .map((file) => {
+    return require(path.join(__dirname, file));
+  });
+
+
+module.exports = routes

@@ -19,7 +19,7 @@ server.register([require('hapi-auth-cookie'),
 ], (err) => {
 
   server.auth.strategy('session', 'cookie', {
-    password: "8JJA4uKNX8vpCZtFjBswA8y7nYZ2UWz3444",
+    password: process.env.COOKIE_PASS,
     cookie: 'sid-example',
     redirectTo: '/',
     isSecure: false
@@ -33,7 +33,9 @@ server.register([require('hapi-auth-cookie'),
     path: Path.join(__dirname, 'templates')
   });
 
-  server.route(routes);
+  for (var route in routes) {
+    server.route(routes[route]);
+}
 });
 
 // Start the server
