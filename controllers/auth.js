@@ -7,13 +7,14 @@ const bcrypt = require('bcrypt');
  */
 module.exports.login = (request, reply) => {
   getValidatedUser(request.payload.username, request.payload.password)
-    .then(function(user) {
+    .then((user) => {
 
       if (user != null) {
-        request.cookieAuth.set(user);
 
+        request.cookieAuth.set(user);
         return reply.redirect('/user/' + user.username + '/favorites');
       } else {
+
         return reply.view('index', {
           'invalid_user': 0,
           'wrong': 1,
@@ -21,7 +22,8 @@ module.exports.login = (request, reply) => {
         });
       }
     })
-    .catch(function(err) {
+    .catch((err) => {
+      
       return reply({
         'error': err
       });
@@ -31,17 +33,16 @@ module.exports.login = (request, reply) => {
 /**
  * Verifies user's password
  */
-function getValidatedUser(username, password) {
-  return new Promise(function(fulfill, reject) {
+const getValidatedUser = (username, password) => {
+  return new Promise((fulfill, reject) => {
 
     models.user.findOne({
-      attributes: ['id', 'username', 'password'],
       where: {
         username: username
       }
     }).then((result) => {
       if (result != null) {
-        bcrypt.compare(password, result.password, function(err, res) {
+        bcrypt.compare(password, result.password, (err, res) => {
           if (res == true) {
             return fulfill({
               'id': result.id,
