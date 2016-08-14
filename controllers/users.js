@@ -94,9 +94,9 @@ module.exports.findFavorites = (request, reply) => {
     where: {
       id: user_id
     }
-  }).then((result) => {
+  }).then((user) => {
 
-    result.getFavorites().then((favorites) => {
+    user.getFavorites().then((favorites) => {
 
       let artists_results = []
       if (favorites.length == 0) {
