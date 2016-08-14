@@ -20,17 +20,21 @@ block content
 									thead
 										th
 										th Artist
-										th
+										th Genres
+										th Biography
 										th(style="width:50px;") Unfollow
 										tbody
 											each favorite in favorites
 												tr
-													td(style='width:200px;')
+													td(style='width:150px;')
 														img(alt="Avatar", src = favorite.photo, width="150", height="150")
-													td(style='width:250px;')
+													td(style='width:200px;')
 														p
 															h3 #{favorite.name}
-													td
+													td(style='width:150px;') 
+															each genre in favorite.genres
+																p #{genre}
+													td(style='width:500px;')
 														p #{favorite.summary}
 													td(style="text-align: center;")
 														a(href="#")
