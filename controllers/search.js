@@ -15,10 +15,15 @@ module.exports.searchByArtist = (request, reply) => {
   const query = request.payload;
 
   query.artist = query.artist.replace('&', 'e')
-  let path = 'https://music-api.musikki.com/v1/artists?q=[artist-name:' + query.artist + ']&appkey=' + process.env.API_KEY + '&appid=' + process.env.API_ID;
+  let path = 'https://music-api.musikki.com/v1/artists?q=[artist-name:' +
+    query.artist + ']&appkey=' + process.env.API_KEY + '&appid=' +
+    process.env.API_ID;
   path = encodeURI(path)
 
-  Wreck.get(path, {acceptEncoding: false},(err, res, payload) => {
+  Wreck.get(path, {
+    acceptEncoding: false
+  }, (err, res, payload) => {
+
     const results = JSON.parse(payload.toString())
     users.getFavoriteArtists(results.results, request.auth.credentials, reply)
   });

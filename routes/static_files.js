@@ -4,7 +4,7 @@ const Path = require('path');
 module.exports = [{
     method: 'GET',
     path: '/',
-    handler: function(request, reply) {
+    handler: (request, reply) => {
       return reply.view('index', {
         'invalid_user': 0,
         'wrong': 0
