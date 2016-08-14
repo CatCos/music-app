@@ -1,22 +1,23 @@
 'use strict';
 module.exports = function(sequelize, DataTypes) {
   const User = sequelize.define('user', {
-    username: {
-      type: DataTypes.STRING,
-      allowNull: false
-    },
+      username: {
+        type: DataTypes.STRING,
+        allowNull: false
+      },
 
-    password : {
-      type: DataTypes.STRING,
-      allowNull: false
-    },
+      password: {
+        type: DataTypes.STRING,
+        allowNull: false
+      }
+    }, {
+      classMethods: {
+        associate: function(models) {
 
-    favorites : {
-      type : DataTypes.JSON,
-      allowNull : true
+          User.hasMany(models.favorite);
+        }
+      }
     }
-
-  });
-
+  );
   return User;
 };
