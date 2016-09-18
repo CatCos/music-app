@@ -40,7 +40,7 @@ server.register([require('hapi-auth-cookie'),
 
 // Start the server
 
-models.sequelize.sync({force: true}).then(function() {
+models.sequelize.sync().then(function() {
   server.start((err) => {
 
     if (err) {

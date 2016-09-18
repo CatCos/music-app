@@ -1,0 +1,10 @@
+{
+  "development": {
+    "username": "musikki",
+    "password": "password",
+    "database": "musikki_2",
+    "host":"127.0.0.1",
+    "dialect": "postgres",
+    "seederStorage": "sequelize"
+  }
+}

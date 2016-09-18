@@ -9,7 +9,10 @@ module.exports = function(sequelize, DataTypes) {
       type: DataTypes.STRING,
       allowNull: false
     },
-
+    type : {
+      type: DataTypes.STRING,
+      allowNull: true
+    },
     summary: {
       type: DataTypes.TEXT,
       allowNull: true
@@ -21,6 +24,20 @@ module.exports = function(sequelize, DataTypes) {
     genres : {
       type: DataTypes.ARRAY(DataTypes.STRING),
       allowNull: true
+    },
+    country : {
+      type : DataTypes.STRING,
+      allowNull: true
+    },
+    start_date : {
+      type : DataTypes.DATEONLY,
+      allowNull : true
+    },
+
+    current_members : {
+      type: DataTypes.ARRAY(DataTypes.JSON),
+      allowNull : true
+
     }
   });
   return Artist;

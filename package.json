@@ -29,6 +29,7 @@
   },
   "devDependencies": {
     "foreman": "^1.4.1",
+    "gulp": "github:gulpjs/gulp#4.0",
     "nodemon": "^1.10.0"
   },
   "description": ""

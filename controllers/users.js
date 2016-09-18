@@ -172,13 +172,40 @@ module.exports.addFavorite = (request, reply) => {
       genres.push(artist_information.genres[i].name)
     }
 
+    let start_date = new Date(artist_information.dates.start.year + "/" +
+                              artist_information.dates.start.month + "/" +
+                              artist_information.dates.start.day);
+
+    let current_members_information = artist_information.current_members
+    let current_members = []
+    for(let i = 0; i < current_members_information.length; i++) {
+      let roles = [];
+
+      for(let j = 0; i < current_members_information[i].roles;j++) {
+        if(current_members_information[i].roles[j].name != 'tribute') {
+          roles.push(current_members_information[i].roles[j].name)
+        }
+      }
+
+      current_members.push({
+        'name' : current_members_information[i].name,
+        'roles' : roles
+
+      })
+    }
+    console.log(start_date)
     models.artist.findOrCreate({
       defaults: {
         mkid: artist_information.mkid,
         name: artist_information.name,
         summary: artist_information.bio.summary,
         photo: artist_information.image,
-        genres: genres
+        genres: genres,
+        type: artist_information.type,
+        country: artist_information.location.current.country.name,
+        start_date : start_date,
+        current_members : current_members
+
       },
       where: {
         mkid: artist_information.mkid
